@@ -4,16 +4,19 @@ import Navbar from "./nav/NavBar";
 import { Outlet, useLocation } from "react-router-dom";
 import HomePage from "../../features/home/HomePage";
 import { Provider } from "react-redux";
-import { store } from "../store/store";
+import { store, useAppDispatch } from "../store/store";
+import ModalManager from "../common/modals/ModalManager";
 
 function App() {
   const location = useLocation();
+
   return (
     <Provider store={store}>
       {location.pathname === "/" ? (
         <HomePage />
       ) : (
         <>
+          <ModalManager />
           <Navbar />
           <Container className="main">
             <Outlet />

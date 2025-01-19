@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Image, List } from "semantic-ui-react";
 import { Attendees } from "../../../app/types/event";
 

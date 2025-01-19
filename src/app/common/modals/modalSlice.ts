@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 type State = {
   open: boolean;
   type: string | null;

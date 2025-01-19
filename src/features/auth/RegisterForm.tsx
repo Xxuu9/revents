@@ -1,13 +1,15 @@
-import { Button, Form, Label, Divider } from "semantic-ui-react";
+import { Button, Form, Label } from "semantic-ui-react";
 import ModalWrapper from "../../app/common/modals/ModalWrapper";
 import { FieldValues, useForm } from "react-hook-form";
 import { useAppDispatch } from "../../app/store/store";
 import { closeModal } from "../../app/common/modals/modalSlice";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../app/config/firebase";
-import SocialLogin from "./SocialLogin";
+import { useFirestore } from "../../app/hooks/firestore/useFirestore";
+import { Timestamp } from "firebase/firestore";
 
-export default function LoginForm() {
+export default function RegisterForm() {
+  const { set } = useFirestore("profiles");
   const {
     register,
     handleSubmit,
@@ -20,7 +22,22 @@ export default function LoginForm() {
 
   async function onSubmit(data: FieldValues) {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      const userCreds = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+
+      await updateProfile(userCreds.user, {
+        displayName: data.displayName,
+      });
+
+      await set(userCreds.user.uid, {
+        displayName: data.displayName,
+        email: data.email,
+        createAt: Timestamp.now(),
+      });
+
       dispatch(closeModal());
     } catch (error: any) {
       setError("root.serverError", {
@@ -31,8 +48,14 @@ export default function LoginForm() {
   }
 
   return (
-    <ModalWrapper header="Sign into re-vents" size="mini">
+    <ModalWrapper header="Register to re-vents">
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form.Input
+          defaultValue=""
+          placeholder="Display name"
+          {...register("displayName", { required: true })}
+          error={errors.displayName && "Display name is required"}
+        />
         <Form.Input
           defaultValue=""
           placeholder="Email address"
@@ -56,7 +79,7 @@ export default function LoginForm() {
           <Label
             basic
             color="red"
-            style={{ display: "block", marginBotoom: 10 }}
+            style={{ display: "block", marginBottom: 10 }}
             content={errors.root.serverError.message}
           />
         )}
@@ -67,10 +90,8 @@ export default function LoginForm() {
           fluid
           size="large"
           color="teal"
-          content="Login"
+          content="Register"
         />
-        <Divider horizontal>Or</Divider>
-        <SocialLogin />
       </Form>
     </ModalWrapper>
   );

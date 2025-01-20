@@ -8,7 +8,7 @@ import { useAppSelector } from "../../../app/store/store";
 import { useEffect } from "react";
 import { actions } from "../eventSlice";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
-import { useFirestore } from "../../../app/hooks/firestore/useFirestore";
+import { useFireStore } from "../../../app/hooks/firestore/useFirestore";
 
 export default function EventDetailedPage() {
   const { id } = useParams();
@@ -16,7 +16,7 @@ export default function EventDetailedPage() {
     state.events.data.find((e) => e.id === id)
   );
   const { status } = useAppSelector((state) => state.events);
-  const { loadDocument } = useFirestore("events");
+  const { loadDocument } = useFireStore("events");
 
   useEffect(() => {
     if (!id) return;

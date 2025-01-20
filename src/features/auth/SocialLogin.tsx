@@ -1,5 +1,5 @@
 import { Button, Icon } from "semantic-ui-react";
-import { useFirestore } from "../../app/hooks/firestore/useFirestore";
+import { useFireStore } from "../../app/hooks/firestore/useFirestore";
 import { useAppDispatch } from "../../app/store/store";
 import {
   AuthProvider,
@@ -17,7 +17,7 @@ export default function SocialLogin() {
     loading: false,
     provider: null,
   });
-  const { set } = useFirestore("profiles");
+  const { set } = useFireStore("profiles");
   const dispatch = useAppDispatch();
 
   async function handleSocialLogin(selectedProvider: string) {

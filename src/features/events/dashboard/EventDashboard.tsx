@@ -4,11 +4,11 @@ import { useAppSelector } from "../../../app/store/store";
 import { useEffect } from "react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { actions } from "../eventSlice";
-import { useFirestore } from "../../../app/hooks/firestore/useFirestore";
+import { useFireStore } from "../../../app/hooks/firestore/useFirestore";
 
 export default function EventDashboard() {
   const { data: events, status } = useAppSelector((state) => state.events);
-  const { loadCollection } = useFirestore("events");
+  const { loadCollection } = useFireStore("events");
 
   useEffect(() => {
     loadCollection(actions);

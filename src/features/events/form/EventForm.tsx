@@ -8,13 +8,13 @@ import DatePicker from "react-datepicker";
 import { Timestamp } from "firebase/firestore";
 import { AppEvent } from "../../../app/types/event";
 import { toast } from "react-toastify";
-import { useFirestore } from "../../../app/hooks/firestore/useFirestore";
+import { useFireStore } from "../../../app/hooks/firestore/useFirestore";
 import { actions } from "../eventSlice";
 import { useEffect } from "react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 export default function EventForm() {
-  const { loadDocument, create, update } = useFirestore("events");
+  const { loadDocument, create, update } = useFireStore("events");
   const {
     register,
     handleSubmit,

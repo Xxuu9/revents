@@ -18,7 +18,7 @@ type ListnerState = {
   unsubscribe: () => void;
 };
 
-export const useFirestore = <T extends DocumentData>(path: string) => {
+export const useFireStore = <T extends DocumentData>(path: string) => {
   const listnersRef = useRef<ListnerState[]>([]);
 
   useEffect(() => {

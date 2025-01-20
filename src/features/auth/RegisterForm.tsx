@@ -5,11 +5,11 @@ import { useAppDispatch } from "../../app/store/store";
 import { closeModal } from "../../app/common/modals/modalSlice";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../app/config/firebase";
-import { useFirestore } from "../../app/hooks/firestore/useFirestore";
+import { useFireStore } from "../../app/hooks/firestore/useFirestore";
 import { Timestamp } from "firebase/firestore";
 
 export default function RegisterForm() {
-  const { set } = useFirestore("profiles");
+  const { set } = useFireStore("profiles");
   const {
     register,
     handleSubmit,

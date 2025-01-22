@@ -12,6 +12,8 @@ import { useAppDispatch } from "../../store/store";
 import { useRef, useEffect, useCallback } from "react";
 import { db } from "../../config/firebase";
 import { toast } from "react-toastify";
+import { CollectionOptions } from "./types";
+import { getQuery } from "./getQuery";
 
 type ListnerState = {
   name?: string;
@@ -40,10 +42,10 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
   const dispatch = useAppDispatch();
 
   const loadCollection = useCallback(
-    (actions: GenericActions<T>) => {
+    (actions: GenericActions<T>, options?: CollectionOptions) => {
       dispatch(actions.loading());
 
-      const query = collection(db, path);
+      const query = getQuery(path, options);
 
       const listner = onSnapshot(query, {
         next: (querySnapshot) => {

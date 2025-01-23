@@ -1,6 +1,6 @@
 import { Container } from "semantic-ui-react";
 import Navbar from "./nav/NavBar";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import HomePage from "../../features/home/HomePage";
 import { useAppDispatch } from "../store/store";
 import ModalManager from "../common/modals/ModalManager";
@@ -33,6 +33,7 @@ function App() {
         <HomePage />
       ) : (
         <>
+          <ScrollRestoration />
           <ModalManager />
           <Navbar />
           <Container className="main">

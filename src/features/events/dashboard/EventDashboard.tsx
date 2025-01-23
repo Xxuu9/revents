@@ -2,7 +2,6 @@ import { Grid } from "semantic-ui-react";
 import EventList from "./EventList";
 import { useAppSelector } from "../../../app/store/store";
 import { useEffect, useRef, useState } from "react";
-import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { actions } from "../eventSlice";
 import { useFireStore } from "../../../app/hooks/firestore/useFirestore";
 import EventFilters from "./EventFilters";

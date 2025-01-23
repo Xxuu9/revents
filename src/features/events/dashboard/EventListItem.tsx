@@ -11,6 +11,7 @@ import {
 import EventListAttendee from "./EventListAttendee";
 import { AppEvent } from "../../../app/types/event";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 
 type Props = {
   event: AppEvent;
@@ -45,7 +46,7 @@ export default function EventListItem({ event }: Props) {
       <Segment>
         <span>
           <Icon name="clock" />
-          {event.date}
+          {format(new Date(event.date), "dd MMMM yyyy, h:mm a")}
           <Icon name="marker" />
           {event.venue}
         </span>

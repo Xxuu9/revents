@@ -4,6 +4,7 @@ import {
   doc,
   DocumentData,
   onSnapshot,
+  QueryDocumentSnapshot,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
@@ -22,6 +23,8 @@ type ListnerState = {
 
 export const useFireStore = <T extends DocumentData>(path: string) => {
   const listnersRef = useRef<ListnerState[]>([]);
+  const lastDocRef = useRef<QueryDocumentSnapshot | null>(null);
+  const hasMore = useRef(true);
 
   useEffect(() => {
     let listenerRefValue: ListnerState[] | null = null;
@@ -43,6 +46,11 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
 
   const loadCollection = useCallback(
     (actions: GenericActions<T>, options?: CollectionOptions) => {
+      if (options?.reset) {
+        lastDocRef.current = null;
+        hasMore.current = true;
+      }
+
       dispatch(actions.loading());
 
       const query = getQuery(path, options);

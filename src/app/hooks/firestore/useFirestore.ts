@@ -3,8 +3,10 @@ import {
   deleteDoc,
   doc,
   DocumentData,
+  getDocs,
   onSnapshot,
   QueryDocumentSnapshot,
+  QuerySnapshot,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
@@ -53,26 +55,45 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
 
       dispatch(actions.loading());
 
-      const query = getQuery(path, options);
+      const query = getQuery(path, options, lastDocRef);
 
-      const listner = onSnapshot(query, {
-        next: (querySnapshot) => {
-          const data: DocumentData[] = [];
-          if (querySnapshot.empty) {
-            dispatch(actions.success([] as unknown as T));
-            return;
-          }
-          querySnapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
-          dispatch(actions.success(data as unknown as T));
-        },
-        error: (error) => {
-          dispatch(actions.error(error.message));
-          console.log("Collection error:", error.message);
-        },
-      });
-      listnersRef.current.push({ name: path, unsubscribe: listner });
+      const processQuery = (
+        querySnapshot: QuerySnapshot<DocumentData, DocumentData>
+      ) => {
+        const data: DocumentData[] = [];
+
+        if (querySnapshot.empty) {
+          hasMore.current = false;
+          dispatch(actions.success([] as unknown as T));
+          return;
+        }
+        querySnapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
+        });
+        if (options?.pagination && options.limit) {
+          lastDocRef.current =
+            querySnapshot.docs[querySnapshot.docs.length - 1];
+          hasMore.current = !(querySnapshot.docs.length < options.limit);
+        }
+        dispatch(actions.success(data as unknown as T));
+      };
+
+      if (options?.get) {
+        getDocs(query).then((querySnapshot) => {
+          processQuery(querySnapshot);
+        });
+      } else {
+        const listner = onSnapshot(query, {
+          next: (querySnapshot) => {
+            processQuery(querySnapshot);
+          },
+          error: (error) => {
+            dispatch(actions.error(error.message));
+            console.log("Collection error:", error.message);
+          },
+        });
+        listnersRef.current.push({ name: path, unsubscribe: listner });
+      }
     },
     [dispatch, path]
   );
@@ -137,5 +158,5 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
     }
   };
 
-  return { loadCollection, loadDocument, create, update, remove, set };
+  return { loadCollection, loadDocument, create, update, remove, set, hasMore };
 };
